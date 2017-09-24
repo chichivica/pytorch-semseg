@@ -57,8 +57,8 @@ def train(args):
                 images = Variable(images)
                 labels = Variable(labels)
 
-            iter = len(trainloader) * epoch + i
-            poly_lr_scheduler(optimizer, args.l_rate, iter)
+            # iter = len(trainloader) * epoch + i
+            # poly_lr_scheduler(optimizer, args.l_rate, iter)
 
             optimizer.zero_grad()
             outputs = model(images)
