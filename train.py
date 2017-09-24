@@ -16,8 +16,8 @@ from ptsemseg.loss import cross_entropy2d
 from ptsemseg.metrics import scores
 from lr_scheduling import *
 
-def train(args):
 
+def train(args):
     # Setup Dataloader
     data_loader = get_loader(args.dataset)
     data_path = get_data_path(args.dataset)
@@ -57,9 +57,9 @@ def train(args):
                 images = Variable(images)
                 labels = Variable(labels)
 
-            iter = len(trainloader)*epoch + i
+            iter = len(trainloader) * epoch + i
             poly_lr_scheduler(optimizer, args.l_rate, iter)
-            
+
             optimizer.zero_grad()
             outputs = model(images)
 
@@ -74,8 +74,8 @@ def train(args):
                 win=loss_window,
                 update='append')
 
-            if (i+1) % 20 == 0:
-                print("Epoch [%d/%d] Loss: %.4f" % (epoch+1, args.n_epoch, loss.data[0]))
+            if (i + 1) % 20 == 0:
+                print("Epoch [%d/%d] Loss: %.4f" % (epoch + 1, args.n_epoch, loss.data[0]))
 
         # test_output = model(test_image)
         # predicted = loader.decode_segmap(test_output[0].cpu().data.numpy().argmax(0))
@@ -87,23 +87,24 @@ def train(args):
 
         torch.save(model, "{}_{}_{}_{}.pkl".format(args.arch, args.dataset, args.feature_scale, epoch))
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Hyperparams')
-    parser.add_argument('--arch', nargs='?', type=str, default='fcn8s', 
+    parser.add_argument('--arch', nargs='?', type=str, default='fcn8s',
                         help='Architecture to use [\'fcn8s, unet, segnet etc\']')
-    parser.add_argument('--dataset', nargs='?', type=str, default='pascal', 
+    parser.add_argument('--dataset', nargs='?', type=str, default='pascal',
                         help='Dataset to use [\'pascal, camvid, ade20k etc\']')
-    parser.add_argument('--img_rows', nargs='?', type=int, default=256, 
+    parser.add_argument('--img_rows', nargs='?', type=int, default=256,
                         help='Height of the input image')
-    parser.add_argument('--img_cols', nargs='?', type=int, default=256, 
+    parser.add_argument('--img_cols', nargs='?', type=int, default=256,
                         help='Height of the input image')
-    parser.add_argument('--n_epoch', nargs='?', type=int, default=100, 
+    parser.add_argument('--n_epoch', nargs='?', type=int, default=100,
                         help='# of the epochs')
-    parser.add_argument('--batch_size', nargs='?', type=int, default=1, 
+    parser.add_argument('--batch_size', nargs='?', type=int, default=1,
                         help='Batch Size')
-    parser.add_argument('--l_rate', nargs='?', type=float, default=1e-5, 
+    parser.add_argument('--l_rate', nargs='?', type=float, default=1e-5,
                         help='Learning Rate')
-    parser.add_argument('--feature_scale', nargs='?', type=int, default=1, 
-                        help='Divider for # of features to use')    
+    parser.add_argument('--feature_scale', nargs='?', type=int, default=1,
+                        help='Divider for # of features to use')
     args = parser.parse_args()
     train(args)

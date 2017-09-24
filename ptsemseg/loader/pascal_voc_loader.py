@@ -11,10 +11,12 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 from torch.utils import data
 
+
 def get_data_path(name):
     js = open('config.json').read()
     data = json.loads(js)
     return data[name]['data_path']
+
 
 class pascalVOCLoader(data.Dataset):
     def __init__(self, root, split="train_aug", is_transform=False, img_size=512):
@@ -41,8 +43,8 @@ class pascalVOCLoader(data.Dataset):
 
     def __getitem__(self, index):
         img_name = self.files[self.split][index]
-        img_path = self.root + '/JPEGImages/' + img_name + '.jpg'
-        lbl_path = self.root + '/SegmentationClass/pre_encoded/' + img_name + '.png'
+        img_path = self.root + 'JPEGImages/' + img_name + '.jpg'
+        lbl_path = self.root + 'SegmentationClass/pre_encoded/' + img_name + '.png'
 
         img = m.imread(img_path)
         img = np.array(img, dtype=np.uint8)
@@ -55,19 +57,19 @@ class pascalVOCLoader(data.Dataset):
 
         return img, lbl
 
-
     def transform(self, img, lbl):
         img = img[:, :, ::-1]
         img = img.astype(np.float64)
         img -= self.mean
         img = m.imresize(img, (self.img_size[0], self.img_size[1]))
+        m.imsave(img, "after_resize!.jpg")
         # Resize scales images from 0 to 255, thus we need
         # to divide by 255.0
         img = img.astype(float) / 255.0
         # NHWC -> NCWH
         img = img.transpose(2, 0, 1)
 
-        lbl[lbl==255] = 0
+        lbl[lbl == 255] = 0
         lbl = lbl.astype(float)
         lbl = m.imresize(lbl, (self.img_size[0], self.img_size[1]), 'nearest', mode='F')
         lbl = lbl.astype(int)
@@ -76,13 +78,11 @@ class pascalVOCLoader(data.Dataset):
         lbl = torch.from_numpy(lbl).long()
         return img, lbl
 
-
     def get_pascal_labels(self):
-        return np.asarray([[0,0,0], [128,0,0], [0,128,0], [128,128,0], [0,0,128], [128,0,128],
-                              [0,128,128], [128,128,128], [64,0,0], [192,0,0], [64,128,0], [192,128,0],
-                              [64,0,128], [192,0,128], [64,128,128], [192,128,128], [0, 64,0], [128, 64, 0],
-                              [0,192,0], [128,192,0], [0,64,128]])
-
+        return np.asarray([[0, 0, 0], [128, 0, 0], [0, 128, 0], [128, 128, 0], [0, 0, 128], [128, 0, 128],
+                           [0, 128, 128], [128, 128, 128], [64, 0, 0], [192, 0, 0], [64, 128, 0], [192, 128, 0],
+                           [64, 0, 128], [192, 0, 128], [64, 128, 128], [192, 128, 128], [0, 64, 0], [128, 64, 0],
+                           [0, 192, 0], [128, 192, 0], [0, 64, 128]])
 
     def encode_segmap(self, mask):
         mask = mask.astype(int)
@@ -91,7 +91,6 @@ class pascalVOCLoader(data.Dataset):
             label_mask[np.where(np.all(mask == label, axis=-1))[:2]] = i
         label_mask = label_mask.astype(int)
         return label_mask
-
 
     def decode_segmap(self, temp, plot=False):
         label_colours = self.get_pascal_labels()
@@ -123,11 +122,11 @@ class pascalVOCLoader(data.Dataset):
 
         sbd_train_list = tuple(open(sbd_path + 'dataset/train.txt', 'r'))
         sbd_train_list = [id_.rstrip() for id_ in sbd_train_list]
-        
+
         self.files['train_aug'] = self.files['train'] + sbd_train_list
 
         if pre_encode:
-            print "Pre-encoding segmentation masks..."
+            print("Pre-encoding segmentation masks...")
             for i in tqdm(sbd_train_list):
                 lbl_path = sbd_path + 'dataset/cls/' + i + '.mat'
                 lbl = io.loadmat(lbl_path)['GTcls'][0]['Segmentation'][0].astype(np.int32)
@@ -139,6 +138,7 @@ class pascalVOCLoader(data.Dataset):
                 lbl = self.encode_segmap(m.imread(lbl_path))
                 lbl = m.toimage(lbl, high=lbl.max(), low=lbl.min())
                 m.imsave(target_path + i + '.png', lbl)
+
 
 if __name__ == '__main__':
     local_path = '/home/gpu_users/meetshah/segdata/pascal/VOCdevkit/VOC2012'
@@ -152,5 +152,5 @@ if __name__ == '__main__':
             img = img[:, :, ::-1]
             plt.imshow(img)
             plt.show()
-            plt.imshow(dst.decode_segmap(labels.numpy()[i+1]))
+            plt.imshow(dst.decode_segmap(labels.numpy()[i + 1]))
             plt.show()

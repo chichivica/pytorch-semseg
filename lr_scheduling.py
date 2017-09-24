@@ -1,4 +1,6 @@
-def poly_lr_scheduler(optimizer, init_lr, iter, lr_decay_iter=1, max_iter=30000, power=0.9,):
+# https://github.com/meetshah1995/pytorch-semseg/issues/9
+
+def poly_lr_scheduler(optimizer, init_lr, iter, lr_decay_iter=1, max_iter=30000, power=0.9, ):
     """Polynomial decay of learning rate
         :param init_lr is base learning rate
         :param iter is a current iteration
@@ -11,7 +13,7 @@ def poly_lr_scheduler(optimizer, init_lr, iter, lr_decay_iter=1, max_iter=30000,
         return optimizer
 
     for param_group in optimizer.param_groups:
-        param_group['lr'] = init_lr*(1 - iter/max_iter)**power
+        param_group['lr'] = init_lr * (1 - iter / max_iter) ** power
 
 
 def adjust_learning_rate(optimizer, init_lr, epoch):

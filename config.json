@@ -1,24 +1,17 @@
 {
-  "pascal":
-  {
-    "data_path": "/home/gpu_users/meetshah/segdata/pascal/VOCdevkit/VOC2012/"
+  "pascal": {
+    "data_path": "/home/chichivica/Projects/Python/pytorch-semseg/VOCdevkit/VOC2012/"
   },
-
-  "sbd":
-  {
-    "data_path": "/home/gpu_users/meetshah/segdata/pascal/benchmark_RELEASE/"
+  "sbd": {
+    "data_path": "/home/chichivica/Projects/Python/pytorch-semseg/benchmark_RELEASE/"
   },
-
-  "camvid":
-  {
+  "camvid": {
     "data_path": "/Users/meet/data/CamVid/"
   },
-  "ade20k":
-  {
+  "ade20k": {
     "data_path": "/Users/meet/data/ADE20K_2016_07_26/"
   },
-  "mit_sceneparsing_benchmark":
-  {
+  "mit_sceneparsing_benchmark": {
     "data_path": "/home/ubuntu/DATA/ADEChallengeData2016/"
   }
 }

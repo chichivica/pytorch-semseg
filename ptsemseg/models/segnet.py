@@ -1,9 +1,8 @@
 import torch.nn as nn
+from ptsemseg.models.utils import *
 
-from utils import *
 
 class segnet(nn.Module):
-
     def __init__(self, n_classes=21, in_channels=3, is_unpooling=True):
         super(segnet, self).__init__()
 
@@ -37,7 +36,6 @@ class segnet(nn.Module):
         up1 = self.up1(up2, indices_1, unpool_shape1)
 
         return up1
-
 
     def init_vgg16_params(self, vgg16):
         blocks = [self.down1,
