@@ -47,7 +47,6 @@ def train(args):
         test_image = Variable(test_image.unsqueeze(0))
 
     optimizer = torch.optim.SGD(model.parameters(), lr=args.l_rate, momentum=0.99, weight_decay=5e-4)
-
     for epoch in range(args.n_epoch):
         for i, (images, labels) in enumerate(trainloader):
             if torch.cuda.is_available():
